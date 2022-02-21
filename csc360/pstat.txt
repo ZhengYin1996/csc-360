@@ -1,0 +1,62 @@
+if(checkProcess(pid)==1)
+	{
+		char statPath[INPUT_SIZE];
+		char statusPath[INPUT_SIZE];
+		sprintf(statPath,"/proc/%d/stat,pid);
+		sprintf(statusPath,"/proc/%d/status,pid);
+		char* statContent[INPUT_SIZE];
+		FILE* file = fopen(statPath,"r");
+		char fileReader[1024];
+		if(file!=NULL)
+		{
+			int i =0;
+			while(fgets(fileReader,sizeof(fileReader)-1,file)!=NULL)
+			{
+				char* token = strtok(fileReader,LSH_TOK_DELIM);
+				while(token !=NULL)
+				{
+					statContent[i] = token;
+					token = strtok(NULL,LSH_TOK_DELIM);
+					i++;
+				}
+			}
+			fclose(file);
+		}
+		else
+		{
+			printf("Error: could not read stat file\n");
+		}
+		char statusContent[INPUT_SIZE][INPUT_SIZE];
+		FILE* statusFile = fopen(statusPath,"r");
+		if(statusFile!=NULL)
+		{
+			int j = 0;
+			while(fgets(statusContent[j],INPUT_SIZE, statusFile))
+			{
+				j++
+			}
+			fclose(statusFile);
+		}
+		else
+		{
+			printf("Error: could not read status file\n");
+			return;
+		}
+		char* p;
+		long unsigned int utime = strtoul(statContents[13], &p, 10) / sysconf(_SC_CLK_TCK);
+		long unsigned int stime = strtoul(statContents[14], &p, 10) / sysconf(_SC_CLK_TCK);
+		char* voluntary_ctxt_switches = statusContents[39];
+		char* nonvoluntary_ctxt_switches = statusContents[40];
+
+		printf("comm:\t%s\n", statContents[1]);
+		printf("state:\t%s\n", statContents[2]);
+		printf("utime:\t%lu\n", utime);
+		printf("stime:\t%lu\n", stime);
+		printf("rss:\t%s\n", statContents[24]);
+		printf("%s", voluntary_ctxt_switches);
+		printf("%s", nonvoluntary_ctxt_switches);
+	}
+	else if(checkProcess(pid)==0)
+	{
+		printf("Process does not exist.\n");
+	}
